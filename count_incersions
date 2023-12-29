@@ -1,0 +1,94 @@
+/* COL106 LAB TEST 2 Q1 : FIND NUMBER OF INVERSIONS */
+/* Please do not include ANY headers in this file */
+#include<string>
+#include<iostream>
+#include <bits/stdc++.h>
+using namespace std;
+
+// You can implement helper functions here
+
+/* You need to find the number of inversions as defined in the
+ problem statement given on Moodle */
+    
+// Given an array arr and its size n, return the number of inversions
+int* merge(int *a, int *b, int m, int n){
+	int i,j;
+	i=0;
+	j=0;
+	int *c=new int[m+n+1];
+	int k=0;
+	int inv=0;	
+	int added=-1;
+	while(i<m && j<n){
+		if(a[i]<=b[j]){
+			c[k]=a[i];
+			i++;
+			k++;
+		}
+		else{
+			inv=inv+(m-i);
+			added=j;
+			c[k]=b[j];
+			j++;
+			k++;
+		}
+	}
+	while(i<m){
+		c[k]=a[i];
+		i++;
+		k++;
+	}
+	while(j<n){
+		c[k]=b[j];
+		j++;
+		k++;
+	}
+	inv=inv+a[m]+b[n]+(n-added-1)*(m-i);
+	c[m+n]=inv;
+	int*p= c;
+	return p;
+}
+int* mergesort(int*a, int n){
+	if(n==1){
+		int *b=new int[2];
+		b[0]=a[0];
+		b[1]=0;
+		return &b[0];}
+	int mid=n/2;
+	int *b=new int[mid];
+	int *c=new int[n-mid];
+	for(int i=0;i<mid;i++){
+		b[i]=a[i];}
+	for(int i=mid;i<n;i++){
+		c[i-mid]=a[i];}
+	return merge(mergesort(&b[0],mid),mergesort(&c[0],n-mid),mid,n-mid);
+}	
+int get_num_inversions(int arr[], int n){
+    // Implement your code here
+    int a[n+1];
+    int *p=&a[0];
+    p=mergesort(&arr[0],n);
+    return p[n];    
+}
+
+int main() {
+    // TESTCASE 1
+    int arr1[5] = {5,4,3,2,1};
+    int n1 = 5;
+    cout << "[TC1] Your Answer: " << get_num_inversions(arr1, n1) << endl;
+    cout << "[TC1] Expected Answer: 10"  << endl;
+
+    // TESTCASE 2 
+    int arr2[5] = {1,2,3,4,5};
+    int n2 = 5;
+    cout << "[TC2] Your Answer: " << get_num_inversions(arr2, n2) << endl;
+    cout << "[TC2] Expected Answer: 0"  << endl;
+
+    // TESTCASE 3
+    int arr3[5] = {1,2,5,4,3};
+    int n3 = 5;
+    cout << "[TC2] Your Answer: " << get_num_inversions(arr3, n3) << endl;
+    cout << "[TC2] Expected Answer: 3"  << endl;
+
+    return 0;
+}
